@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="relative flex items-center gap-2">
+    <div class="relative flex items-center gap-1.5">
       <input 
         v-model="inputValue"
         @keydown.enter="save"
-        class="flex-1 bg-slate-900/40 border border-slate-800/50 rounded-xl py-3 px-4 text-sm focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-600" 
+        class="flex-1 bg-slate-900/40 border border-slate-800/50 rounded-lg py-1.5 px-2.5 text-xs focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-600" 
         placeholder="Set name (e.g. 'Project Alpha')" 
         type="text"
       />
@@ -12,17 +12,17 @@
         @click="save"
         :disabled="!inputValue.trim()"
         :class="[
-          'w-12 h-12 rounded-xl flex items-center justify-center transition-colors shadow-lg',
+          'w-8 h-8 rounded-lg flex items-center justify-center transition-colors shadow-lg',
           inputValue.trim() 
             ? 'bg-primary hover:bg-blue-600 shadow-primary/20' 
             : 'bg-slate-800 cursor-not-allowed opacity-50'
         ]"
         title="Create new bar set"
       >
-        <span class="material-symbols-outlined text-white">add</span>
+        <span class="material-symbols-outlined text-white text-lg">add</span>
       </button>
     </div>
-    <p class="text-[11px] text-slate-500 mt-2 px-1">
+    <p class="text-[9px] text-slate-500 mt-1 px-0.5">
       Current browser bar will be captured into this new set.
     </p>
   </div>
