@@ -4,50 +4,50 @@
       <button 
         @click="createManualBackup" 
         :disabled="creating"
-        class="flex items-center gap-4 bg-slate-800/40 hover:bg-slate-800/60 border border-slate-700/50 p-4 rounded-2xl transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+        class="flex items-center gap-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 p-4 rounded-2xl transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-emerald-500 text-xl">file_download</span>
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-500 text-xl">file_download</span>
         </div>
         <div class="text-left flex-1">
-          <p class="text-sm font-semibold text-white">{{ creating ? 'Creating backup...' : 'Create Local Backup' }}</p>
-          <p class="text-xs text-slate-400">Export all sets as a .json file</p>
+          <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ creating ? 'Creating backup...' : 'Create Local Backup' }}</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Export all sets as a .json file</p>
         </div>
-        <span class="material-symbols-outlined ml-auto text-slate-600 group-hover:text-slate-400 transition-colors">chevron_right</span>
+        <span class="material-symbols-outlined ml-auto text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors">chevron_right</span>
       </button>
 
       <button 
         @click="showRestoreModal = true" 
         :disabled="backupHistory.length === 0"
-        class="flex items-center gap-4 bg-slate-800/40 hover:bg-slate-800/60 border border-slate-700/50 p-4 rounded-2xl transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+        class="flex items-center gap-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 p-4 rounded-2xl transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-amber-500 text-xl">file_upload</span>
+        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-amber-600 dark:text-amber-500 text-xl">file_upload</span>
         </div>
         <div class="text-left flex-1">
-          <p class="text-sm font-semibold text-white">Restore from File</p>
-          <p class="text-xs text-slate-400">Import your previously saved bars</p>
+          <p class="text-sm font-semibold text-slate-900 dark:text-white">Restore from File</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Import your previously saved bars</p>
         </div>
-        <span class="material-symbols-outlined ml-auto text-slate-600 group-hover:text-slate-400 transition-colors">chevron_right</span>
+        <span class="material-symbols-outlined ml-auto text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors">chevron_right</span>
       </button>
     </div>
 
-    <div v-if="backupHistory.length > 0" class="text-center text-[10px] text-slate-600 uppercase tracking-widest font-bold pt-4">
+    <div v-if="backupHistory.length > 0" class="text-center text-[10px] text-slate-400 dark:text-slate-600 uppercase tracking-widest font-bold pt-4">
       {{ backupHistory.length }} backup{{ backupHistory.length > 1 ? 's' : '' }} available
     </div>
 
     <div 
       v-if="showRestoreModal"
-      class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center"
+      class="fixed inset-0 z-[60] bg-slate-900/20 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center"
       @click="showRestoreModal = false"
     >
       <div 
-        class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md mx-4 shadow-2xl max-h-[80vh] overflow-hidden flex flex-col"
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 max-w-md mx-4 shadow-2xl max-h-[80vh] overflow-hidden flex flex-col"
         @click.stop
       >
-        <h3 class="text-xl font-bold mb-4">Restore from Backup</h3>
+        <h3 class="text-xl font-bold mb-4 text-slate-900 dark:text-white">Restore from Backup</h3>
         
-        <div v-if="backupHistory.length === 0" class="text-center py-8 text-slate-400">
+        <div v-if="backupHistory.length === 0" class="text-center py-8 text-slate-500 dark:text-slate-400">
           No backups available.
         </div>
         
@@ -59,22 +59,22 @@
             :class="[
               'w-full text-left p-4 rounded-xl border transition-all',
               selectedBackupIndex === index
-                ? 'bg-primary/20 border-primary/50'
-                : 'bg-slate-700/30 border-slate-600/50 hover:border-slate-500'
+                ? 'bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-500/50'
+                : 'bg-slate-50 border-slate-200 hover:border-slate-300 dark:bg-slate-700/30 dark:border-slate-600/50 dark:hover:border-slate-500'
             ]"
           >
-            <div class="font-semibold text-sm mb-1">{{ formatTime(backup.timestamp) }}</div>
-            <div class="text-xs text-slate-400">
+            <div class="font-semibold text-sm mb-1 text-slate-900 dark:text-white">{{ formatTime(backup.timestamp) }}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">
               Active bar: {{ getBarTitle(backup.activeBarId, backup.bars) }}
             </div>
-            <div class="text-xs text-slate-400">
+            <div class="text-xs text-slate-500 dark:text-slate-400">
               {{ backup.bars.length }} bar{{ backup.bars.length > 1 ? 's' : '' }}
             </div>
           </button>
         </div>
 
-        <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-4">
-          <p class="text-xs text-amber-200">
+        <div class="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-xl p-3 mb-4">
+          <p class="text-xs text-amber-800 dark:text-amber-200">
             <strong>Warning:</strong> Restoring will replace all current bookmark bars with the backup data.
           </p>
         </div>
@@ -82,14 +82,14 @@
         <div class="flex gap-3">
           <button 
             @click="showRestoreModal = false"
-            class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all"
+            class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white font-semibold py-2.5 rounded-xl text-sm transition-all"
           >
             Cancel
           </button>
           <button 
             @click="restoreSelected"
             :disabled="selectedBackupIndex === null"
-            class="flex-1 bg-primary hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Restore
           </button>

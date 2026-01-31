@@ -1,27 +1,33 @@
 <template>
-  <div class="flex flex-col h-screen overflow-hidden relative bg-background-dark dark:bg-background-dark bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-    <div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
-      <div class="absolute top-[-10%] right-[-10%] w-[60%] h-[40%] bg-blue-600/10 dark:bg-blue-600/10 bg-blue-400/30 blur-[120px] rounded-full"></div>
-      <div class="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 dark:bg-indigo-600/10 bg-purple-400/30 blur-[120px] rounded-full"></div>
+  <div class="flex flex-col h-screen overflow-hidden relative bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    
+    <div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-100 dark:opacity-20 transition-opacity duration-300">
+      <div class="absolute top-[-10%] right-[-10%] w-[60%] h-[40%] bg-blue-400/30 blur-[120px] rounded-full"></div>
+      <div class="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-purple-400/30 blur-[120px] rounded-full"></div>
     </div>
 
-    <header class="px-4 pt-3 pb-2.5 flex flex-col gap-2 sticky top-0 z-30 bg-background-dark/80 dark:bg-background-dark/80 bg-white/90 glass border-b border-white/5 dark:border-white/5 border-indigo-200/50">
+    <header class="px-4 pt-3 pb-2.5 flex flex-col gap-2 sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800 transition-colors">
       <div class="flex justify-between items-center">
-        <h1 class="text-xl font-bold tracking-tight text-slate-100 dark:text-slate-100 text-indigo-900">BarSwap</h1>
+        <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">BarSwap</h1>
         <button 
           @click="toggleTheme"
-          class="w-8 h-8 rounded-lg bg-slate-800/50 dark:bg-slate-800/50 bg-gradient-to-br from-indigo-100 to-purple-100 hover:bg-slate-700 dark:hover:bg-slate-700 hover:from-indigo-200 hover:to-purple-200 transition-all flex items-center justify-center shadow-sm"
+          class="w-8 h-8 rounded-lg flex items-center justify-center transition-all shadow-sm
+                 bg-slate-100 hover:bg-slate-200 text-slate-600
+                 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-yellow-400"
           title="Toggle theme"
         >
-          <span v-if="isDark" class="material-symbols-outlined text-yellow-400 text-lg">light_mode</span>
-          <span v-else class="material-symbols-outlined text-indigo-600 text-lg">dark_mode</span>
+          <span v-if="isDark" class="material-symbols-outlined text-lg">light_mode</span>
+          <span v-else class="material-symbols-outlined text-lg">dark_mode</span>
         </button>
       </div>
+      
       <div class="relative group">
-        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-400 text-indigo-400 text-base font-light">search</span>
+        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
         <input 
           v-model="searchQuery"
-          class="w-full bg-slate-900/60 dark:bg-slate-900/60 bg-white border border-slate-800/50 dark:border-slate-800/50 border-indigo-200 rounded-lg py-1.5 pl-8 pr-3 text-xs focus:ring-2 focus:ring-primary focus:bg-slate-900 dark:focus:bg-slate-900 focus:bg-white focus:border-indigo-400 transition-all placeholder:text-slate-500 dark:placeholder:text-slate-500 placeholder:text-indigo-300 text-slate-100 dark:text-slate-100 text-slate-900 shadow-sm" 
+          class="w-full rounded-xl py-2 pl-9 pr-3 text-xs transition-all shadow-sm
+                 bg-slate-100 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/50 placeholder:text-slate-400 text-slate-900
+                 dark:bg-slate-800/50 dark:border-slate-700 dark:focus:bg-slate-800 dark:text-white dark:placeholder:text-slate-500" 
           placeholder="Search bookmark bar sets..." 
           type="text"
         />
@@ -32,39 +38,45 @@
       <div class="px-4 pt-3 pb-24">
         <SyncWarning />
         
-        <section class="mb-3">
-          <h2 class="text-[9px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 text-indigo-600 mb-2 px-0.5">Create New Bar Set</h2>
+        <section class="mb-4">
+          <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 px-1">Create New Bar Set</h2>
           <Create @create="create" />
         </section>
 
         <section>
-          <h2 class="text-[9px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 text-indigo-600 mb-2 px-0.5">Saved Bar Sets</h2>
+          <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 px-1">Saved Bar Sets</h2>
           <BookmarksBars :added-bar="createdBar" :search-query="searchQuery" />
         </section>
       </div>
     </main>
 
-    <div class="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/60 dark:bg-slate-900/60 bg-gradient-to-r from-white/95 via-indigo-50/95 to-purple-50/95 glass border-t border-slate-800/50 dark:border-slate-800/50 border-indigo-200/50 shadow-[0_-10px_40px_rgba(0,0,0,0.6)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.6)] shadow-[0_-10px_40px_rgba(99,102,241,0.15)]">
-      <div class="pb-2 pt-2 px-4">
+    <div class="fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur-xl transition-colors
+                bg-white/90 border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
+                dark:bg-slate-900/90 dark:border-slate-800 dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)]">
+      <div class="pb-3 pt-2 px-4">
         <div class="flex flex-col items-center">
-          <div class="w-8 h-0.5 bg-slate-700/60 dark:bg-slate-700/60 bg-indigo-300 rounded-full mb-2"></div>
+          <div class="w-8 h-1 bg-slate-200 dark:bg-slate-700 rounded-full mb-3"></div>
+          
           <div class="w-full flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2">
-              <div class="relative flex items-center justify-center w-6 h-6 rounded-lg bg-primary/10 dark:bg-primary/10 bg-indigo-100">
-                <span class="material-symbols-outlined text-primary text-base">cloud_sync</span>
-                <div v-if="driveConnected" class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 border border-slate-900 dark:border-slate-900 border-white"></div>
+            <div class="flex items-center gap-2.5">
+              <div class="relative flex items-center justify-center w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-500/10">
+                <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-lg">cloud_sync</span>
+                <div v-if="driveConnected" class="absolute top-0 right-0 w-2 h-2 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900"></div>
               </div>
               <div class="flex flex-col">
-                <span class="text-[8px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-500 text-indigo-600">Backup Status</span>
-                <span class="text-[10px] font-medium text-slate-300 dark:text-slate-300 text-indigo-900">{{ backupStatusText }}</span>
+                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">Last Backup</span>
+                <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ backupStatusText }}</span>
               </div>
             </div>
+            
             <button 
               @click="showBackupPanel = !showBackupPanel"
-              class="text-[10px] font-bold text-primary hover:text-white dark:hover:text-white hover:text-white transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 dark:bg-primary/10 bg-indigo-500 border border-primary/20 dark:border-primary/20 border-indigo-600 hover:bg-primary dark:hover:bg-primary hover:bg-indigo-600 active:scale-95 shadow-sm"
+              class="text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-2
+                     bg-slate-900 text-white hover:bg-slate-800
+                     dark:bg-blue-600 dark:hover:bg-blue-500"
             >
-              <span class="material-symbols-outlined text-sm text-white dark:text-white">settings_backup_restore</span>
-              <span class="text-white dark:text-white">Manage</span>
+              <span class="material-symbols-outlined text-lg">settings</span>
+              Manage
             </button>
           </div>
         </div>
@@ -73,57 +85,56 @@
 
     <div 
       v-if="showBackupPanel"
-      class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+      class="fixed inset-0 z-50 bg-slate-900/20 dark:bg-black/60 backdrop-blur-sm"
       @click="showBackupPanel = false"
     >
       <div 
-        class="fixed bottom-0 left-0 right-0 bg-slate-900/95 glass border-t border-slate-800/80 rounded-t-[40px] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] max-h-[70vh] overflow-hidden"
+        class="fixed bottom-0 left-0 right-0 rounded-t-[32px] shadow-2xl max-h-[85vh] overflow-hidden flex flex-col transition-colors
+               bg-white dark:bg-slate-900"
         @click.stop
       >
-        <div class="pt-3 pb-2 flex flex-col items-center">
-          <div class="w-12 h-1.5 bg-slate-700 rounded-full mb-4"></div>
-          <button 
-            @click="showBackupPanel = false"
-            class="text-slate-400 hover:text-white transition-colors"
-          >
-            <span class="material-symbols-outlined text-3xl">keyboard_arrow_down</span>
-          </button>
+        <div class="pt-4 pb-2 flex flex-col items-center bg-inherit z-10">
+          <div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mb-4"></div>
+          <div class="px-8 w-full flex justify-between items-end border-b border-slate-100 dark:border-slate-800 pb-4">
+             <div>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Backup & Restore</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Sync data locally or to the cloud</p>
+             </div>
+             <button @click="showBackupPanel = false" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors">
+                <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">close</span>
+             </button>
+          </div>
         </div>
         
-        <div class="px-8 flex flex-col h-full overflow-y-auto hide-scrollbar pb-12">
-          <header class="mb-8">
-            <h2 class="text-2xl font-bold text-white mb-1">Backup & Restore</h2>
-            <p class="text-sm text-slate-400">Manage your data locally or sync with cloud</p>
-          </header>
-
-          <div class="space-y-6">
-            <div class="bg-slate-800/40 border border-slate-700/50 p-5 rounded-3xl">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary text-2xl">cloud_sync</span>
-                  </div>
-                  <div>
-                    <p class="text-base font-semibold text-white">Google Drive Backups</p>
-                    <p class="text-xs text-slate-400">Sync across devices</p>
-                  </div>
-                </div>
+        <div class="px-6 flex-1 overflow-y-auto hide-scrollbar pb-12 pt-4 space-y-6">
+          <div class="p-5 rounded-2xl border transition-colors
+                      bg-blue-50/50 border-blue-100
+                      dark:bg-slate-800/50 dark:border-slate-700/50">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <span class="material-symbols-outlined text-2xl">cloud_sync</span>
               </div>
-              <DriveBackup @status-change="updateDriveStatus" />
-            </div>
-
-            <div class="bg-slate-800/40 border border-slate-700/50 p-5 rounded-3xl">
-              <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-                  <span class="material-symbols-outlined text-emerald-500 text-2xl">save</span>
-                </div>
-                <div>
-                  <p class="text-base font-semibold text-white">Local Backups</p>
-                  <p class="text-xs text-slate-400">Export and restore manually</p>
-                </div>
+              <div>
+                <p class="text-sm font-bold text-slate-900 dark:text-white">Google Drive</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Automatic cloud sync</p>
               </div>
-              <Backup />
             </div>
+            <DriveBackup @status-change="updateDriveStatus" />
+          </div>
+
+          <div class="p-5 rounded-2xl border transition-colors
+                      bg-emerald-50/50 border-emerald-100
+                      dark:bg-slate-800/50 dark:border-slate-700/50">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <span class="material-symbols-outlined text-2xl">hard_drive</span>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-900 dark:text-white">Local Storage</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Manual export & import</p>
+              </div>
+            </div>
+            <Backup />
           </div>
         </div>
       </div>
@@ -149,7 +160,7 @@ export default defineComponent({
       searchQuery: '',
       driveConnected: false,
       lastBackupTime: null as string | null,
-      isDark: true,
+      isDark: false,
     };
   },
   computed: {
@@ -179,7 +190,11 @@ export default defineComponent({
     },
     async loadTheme() {
       const result = await chrome.storage.local.get('theme');
-      this.isDark = result.theme !== 'light';
+      if (result.theme === 'dark' || (!result.theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        this.isDark = true;
+      } else {
+        this.isDark = false;
+      }
       this.applyTheme();
     },
     toggleTheme() {

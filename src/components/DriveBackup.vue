@@ -4,86 +4,79 @@
       <button 
         @click="connectDrive" 
         :disabled="connecting"
-        class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-3"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl text-sm transition-all shadow-sm shadow-blue-500/20 mb-3 flex items-center justify-center gap-2"
       >
-        <span v-if="connecting">Connecting...</span>
-        <span v-else>Sign in with Google</span>
+        <span v-if="connecting" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+        <span>{{ connecting ? 'Connecting...' : 'Sign in with Google' }}</span>
       </button>
-      <p class="text-xs text-slate-400 mb-2">
-        Backup your bookmarks to Google Drive for cross-device recovery
-      </p>
-      <p v-if="authMethod === 'web-oauth'" class="text-xs text-blue-400">
-        <strong>Note:</strong> Using web-based authentication (compatible with all Chromium browsers)
+      <p class="text-xs text-slate-500 dark:text-slate-400">
+        Securely backup your bookmarks to Google Drive.
       </p>
     </div>
 
     <div v-else>
-      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-700/50">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
         <div class="flex items-center gap-2">
-          <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-          <span class="text-sm font-semibold text-white">Connected</span>
+          <div class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </div>
+          <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">Connected</span>
         </div>
         <button 
           @click="disconnectDrive"
-          class="text-xs text-slate-400 hover:text-white transition-colors"
+          class="text-xs font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"
         >
           Disconnect
         </button>
       </div>
 
-      <div v-if="lastBackupTime" class="text-xs text-slate-400 mb-4">
-        Last backup: {{ formatTime(lastBackupTime) }}
-      </div>
-
-      <div class="grid grid-cols-1 gap-3 mb-4">
+      <div class="grid grid-cols-2 gap-3 mb-4">
         <button 
           @click="backupNow" 
           :disabled="backing"
-          class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 text-white font-semibold py-2 rounded-lg text-xs transition-all flex flex-col items-center justify-center gap-1 h-16"
         >
-          {{ backing ? 'Backing up...' : 'Back up now' }}
+          <span class="material-symbols-outlined text-xl">upload</span>
+          {{ backing ? 'Backing up...' : 'Backup' }}
         </button>
 
         <button 
           @click="showRestoreModal = true" 
           :disabled="loading"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 font-semibold py-2 rounded-lg text-xs transition-all flex flex-col items-center justify-center gap-1 h-16"
         >
-          Restore from Google Drive
+          <span class="material-symbols-outlined text-xl">history</span>
+          Restore
         </button>
       </div>
 
-      <label class="flex items-center gap-3 cursor-pointer">
+      <label class="flex items-center justify-between cursor-pointer p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50">
+        <span class="text-xs font-medium text-slate-600 dark:text-slate-300">Auto-backup on switch</span>
         <div class="relative">
-          <input 
-            type="checkbox" 
-            v-model="autoBackup" 
-            @change="toggleAutoBackup"
-            class="sr-only peer"
-          />
-          <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+          <input type="checkbox" v-model="autoBackup" @change="toggleAutoBackup" class="sr-only peer" />
+          <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
         </div>
-        <span class="text-xs text-slate-300">Auto-backup after each switch</span>
       </label>
     </div>
 
     <div 
       v-if="showRestoreModal"
-      class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center"
+      class="fixed inset-0 z-[60] bg-slate-900/20 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center"
       @click="showRestoreModal = false"
     >
       <div 
-        class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md mx-4 shadow-2xl max-h-[80vh] overflow-hidden flex flex-col"
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 max-w-md mx-4 shadow-2xl max-h-[80vh] overflow-hidden flex flex-col"
         @click.stop
       >
-        <h3 class="text-xl font-bold mb-4">Restore from Google Drive</h3>
+        <h3 class="text-xl font-bold mb-4 text-slate-900 dark:text-white">Restore from Google Drive</h3>
         
         <div v-if="loading" class="text-center py-8">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p class="text-slate-400 mt-3">Loading backups...</p>
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p class="text-slate-500 dark:text-slate-400 mt-3">Loading backups...</p>
         </div>
         
-        <div v-else-if="driveBackups.length === 0" class="text-center py-8 text-slate-400">
+        <div v-else-if="driveBackups.length === 0" class="text-center py-8 text-slate-500 dark:text-slate-400">
           No backups found in Google Drive.
         </div>
         
@@ -95,13 +88,13 @@
             :class="[
               'w-full text-left p-4 rounded-xl border transition-all',
               selectedBackupId === backup.id
-                ? 'bg-primary/20 border-primary/50'
-                : 'bg-slate-700/30 border-slate-600/50 hover:border-slate-500'
+                ? 'bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-500/50'
+                : 'bg-slate-50 border-slate-200 hover:border-slate-300 dark:bg-slate-700/30 dark:border-slate-600/50 dark:hover:border-slate-500'
             ]"
           >
             <div class="flex justify-between items-start">
-              <span class="font-semibold text-sm">{{ formatBackupName(backup.name) }}</span>
-              <span class="text-xs text-slate-400">{{ formatTime(backup.modifiedTime) }}</span>
+              <span class="font-semibold text-sm text-slate-900 dark:text-white">{{ formatBackupName(backup.name) }}</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">{{ formatTime(backup.modifiedTime) }}</span>
             </div>
           </button>
         </div>
@@ -109,14 +102,14 @@
         <div v-if="!loading && driveBackups.length > 0" class="flex gap-3">
           <button 
             @click="showRestoreModal = false"
-            class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all"
+            class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white font-semibold py-2.5 rounded-xl text-sm transition-all"
           >
             Cancel
           </button>
           <button 
             @click="restoreSelected"
             :disabled="!selectedBackupId"
-            class="flex-1 bg-primary hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Restore
           </button>
