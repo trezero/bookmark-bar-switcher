@@ -1,12 +1,12 @@
 {
-  "name": "bookmark-bar-switcher-plus",
+  "name": "barswap",
   "version": "2.0.0",
-  "displayName": "Bookmark Bar Switcher Plus",
+  "displayName": "BarSwap",
   "author": {
     "name": "Jason Perr",
     "email": "support@workflowintelligencenexus.com"
   },
-  "description": "Switch between multiple bookmark bars with sync corruption prevention, automatic backups, and Google Drive integration. Forked from bookmark-bar-switcher by Daniel Purtov.",
+  "description": "Instantly switch between multiple bookmark bar sets. Perfect for managing different workflows, projects, or contexts with sync corruption prevention and automatic backups.",
   "license": "MIT",
   "type": "module",
   "engines": {
