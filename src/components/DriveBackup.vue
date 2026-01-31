@@ -62,8 +62,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getAuthToken, isConnected, uploadBackup, listBackups, downloadBackup, disconnect } from '~/background/drive.ts';
-import { createBackup, restoreFromBackup } from '~/background/backup.ts';
 import { type DriveBackupMeta } from '~/types/backup';
 
 export default defineComponent({
@@ -86,8 +84,27 @@ export default defineComponent({
     await this.loadSettings();
   },
   methods: {
+    async sendMessage(action: string, data: any = {}): Promise<any> {
+      return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ action, ...data }, (response) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+          } else if (response && response.success) {
+            resolve(response);
+          } else {
+            reject(new Error(response?.error || 'Unknown error'));
+          }
+        });
+      });
+    },
     async checkConnection() {
-      this.connected = await isConnected();
+      try {
+        const response = await this.sendMessage('drive:isConnected');
+        this.connected = response.connected;
+      } catch (error) {
+        console.error('Failed to check connection:', error);
+        this.connected = false;
+      }
     },
     async loadSettings() {
       const result = await chrome.storage.local.get(['driveAutoBackup', 'lastDriveBackup']);
@@ -97,8 +114,8 @@ export default defineComponent({
     async connectDrive() {
       this.connecting = true;
       try {
-        const token = await getAuthToken(true);
-        if (token) {
+        const response = await this.sendMessage('drive:getAuthToken', { interactive: true });
+        if (response.token) {
           this.connected = true;
           await chrome.storage.local.set({ driveConnected: true });
         }
@@ -110,15 +127,18 @@ export default defineComponent({
       }
     },
     async disconnectDrive() {
-      await disconnect();
-      this.connected = false;
-      this.autoBackup = false;
+      try {
+        await this.sendMessage('drive:disconnect');
+        this.connected = false;
+        this.autoBackup = false;
+      } catch (error) {
+        console.error('Failed to disconnect:', error);
+      }
     },
     async backupNow() {
       this.backing = true;
       try {
-        const backup = await createBackup();
-        await uploadBackup(backup);
+        await this.sendMessage('drive:uploadBackup');
         this.lastBackupTime = new Date().toISOString();
         await chrome.storage.local.set({ lastDriveBackup: this.lastBackupTime });
         alert('Backup uploaded to Google Drive successfully!');
@@ -136,7 +156,8 @@ export default defineComponent({
       this.showRestoreModal = true;
       this.loading = true;
       try {
-        this.driveBackups = await listBackups();
+        const response = await this.sendMessage('drive:listBackups');
+        this.driveBackups = response.backups;
       } catch (error) {
         console.error('Failed to list backups:', error);
         alert('Failed to load backups from Google Drive.');
@@ -150,8 +171,7 @@ export default defineComponent({
       }
 
       try {
-        const backup = await downloadBackup(this.selectedBackupId);
-        await restoreFromBackup(backup);
+        await this.sendMessage('drive:downloadBackup', { fileId: this.selectedBackupId });
         alert('Bookmarks restored successfully! Please reload the extension.');
         this.showRestoreModal = false;
       } catch (error) {

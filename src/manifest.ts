@@ -74,7 +74,7 @@ const manifest = {
         'switch-to-10': { description: 'Switch to 10. bookmark bar.' },
     },
     oauth2: {
-        client_id: 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
+        client_id: '919329643472-lq45hgd7kmuv5oeorcd76ippkbcikuel.apps.googleusercontent.com',
         scopes: ['https://www.googleapis.com/auth/drive.appdata'],
     },
 };
