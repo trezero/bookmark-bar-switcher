@@ -1,65 +1,128 @@
 <template>
-  <div class="drive-backup">
+  <div>
     <div v-if="!connected" class="text-center">
-      <BButton variant="primary" @click="connectDrive" :disabled="connecting">
+      <button 
+        @click="connectDrive" 
+        :disabled="connecting"
+        class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-3"
+      >
         <span v-if="connecting">Connecting...</span>
         <span v-else>Sign in with Google</span>
-      </BButton>
-      <small class="d-block mt-2 text-muted">
+      </button>
+      <p class="text-xs text-slate-400 mb-2">
         Backup your bookmarks to Google Drive for cross-device recovery
-      </small>
-      <small v-if="authMethod === 'web-oauth'" class="d-block mt-1 text-info">
+      </p>
+      <p v-if="authMethod === 'web-oauth'" class="text-xs text-blue-400">
         <strong>Note:</strong> Using web-based authentication (compatible with all Chromium browsers)
-      </small>
+      </p>
     </div>
 
     <div v-else>
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <strong>Google Drive: Connected</strong>
-        <BButton variant="link" size="sm" @click="disconnectDrive">Disconnect</BButton>
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-700/50">
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+          <span class="text-sm font-semibold text-white">Connected</span>
+        </div>
+        <button 
+          @click="disconnectDrive"
+          class="text-xs text-slate-400 hover:text-white transition-colors"
+        >
+          Disconnect
+        </button>
       </div>
 
-      <div v-if="lastBackupTime" class="text-muted small mb-2">
+      <div v-if="lastBackupTime" class="text-xs text-slate-400 mb-4">
         Last backup: {{ formatTime(lastBackupTime) }}
       </div>
 
-      <div class="d-grid gap-2">
-        <BButton variant="success" @click="backupNow" :disabled="backing">
+      <div class="grid grid-cols-1 gap-3 mb-4">
+        <button 
+          @click="backupNow" 
+          :disabled="backing"
+          class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           {{ backing ? 'Backing up...' : 'Back up now' }}
-        </BButton>
+        </button>
 
-        <BButton variant="info" @click="showRestoreModal = true" :disabled="loading">
+        <button 
+          @click="showRestoreModal = true" 
+          :disabled="loading"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           Restore from Google Drive
-        </BButton>
+        </button>
       </div>
 
-      <BFormCheckbox v-model="autoBackup" @change="toggleAutoBackup" class="mt-3">
-        Auto-backup to Google Drive after each switch
-      </BFormCheckbox>
+      <label class="flex items-center gap-3 cursor-pointer">
+        <div class="relative">
+          <input 
+            type="checkbox" 
+            v-model="autoBackup" 
+            @change="toggleAutoBackup"
+            class="sr-only peer"
+          />
+          <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+        </div>
+        <span class="text-xs text-slate-300">Auto-backup after each switch</span>
+      </label>
     </div>
 
-    <BModal v-model="showRestoreModal" title="Restore from Google Drive" @ok="restoreSelected">
-      <div v-if="loading" class="text-center">
-        <BSpinner small></BSpinner> Loading backups...
+    <div 
+      v-if="showRestoreModal"
+      class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center"
+      @click="showRestoreModal = false"
+    >
+      <div 
+        class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md mx-4 shadow-2xl max-h-[80vh] overflow-hidden flex flex-col"
+        @click.stop
+      >
+        <h3 class="text-xl font-bold mb-4">Restore from Google Drive</h3>
+        
+        <div v-if="loading" class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <p class="text-slate-400 mt-3">Loading backups...</p>
+        </div>
+        
+        <div v-else-if="driveBackups.length === 0" class="text-center py-8 text-slate-400">
+          No backups found in Google Drive.
+        </div>
+        
+        <div v-else class="flex-1 overflow-y-auto space-y-2 mb-4">
+          <button
+            v-for="backup in driveBackups"
+            :key="backup.id"
+            @click="selectedBackupId = backup.id"
+            :class="[
+              'w-full text-left p-4 rounded-xl border transition-all',
+              selectedBackupId === backup.id
+                ? 'bg-primary/20 border-primary/50'
+                : 'bg-slate-700/30 border-slate-600/50 hover:border-slate-500'
+            ]"
+          >
+            <div class="flex justify-between items-start">
+              <span class="font-semibold text-sm">{{ formatBackupName(backup.name) }}</span>
+              <span class="text-xs text-slate-400">{{ formatTime(backup.modifiedTime) }}</span>
+            </div>
+          </button>
+        </div>
+
+        <div v-if="!loading && driveBackups.length > 0" class="flex gap-3">
+          <button 
+            @click="showRestoreModal = false"
+            class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="restoreSelected"
+            :disabled="!selectedBackupId"
+            class="flex-1 bg-primary hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Restore
+          </button>
+        </div>
       </div>
-      <div v-else-if="driveBackups.length === 0">
-        No backups found in Google Drive.
-      </div>
-      <BListGroup v-else>
-        <BListGroupItem
-          v-for="backup in driveBackups"
-          :key="backup.id"
-          :active="selectedBackupId === backup.id"
-          @click="selectedBackupId = backup.id"
-          button
-        >
-          <div class="d-flex justify-content-between">
-            <span>{{ formatBackupName(backup.name) }}</span>
-            <small class="text-muted">{{ formatTime(backup.modifiedTime) }}</small>
-          </div>
-        </BListGroupItem>
-      </BListGroup>
-    </BModal>
+    </div>
   </div>
 </template>
 
@@ -69,6 +132,7 @@ import { type DriveBackupMeta } from '~/types/backup';
 
 export default defineComponent({
   name: 'DriveBackup',
+  emits: ['status-change'],
   data() {
     return {
       connected: false,
@@ -106,9 +170,11 @@ export default defineComponent({
       try {
         const response = await this.sendMessage('drive:isConnected');
         this.connected = response.connected;
+        this.$emit('status-change', { connected: this.connected, lastBackup: this.lastBackupTime });
       } catch (error) {
         console.error('Failed to check connection:', error);
         this.connected = false;
+        this.$emit('status-change', { connected: false });
       }
     },
     async checkAuthMethod() {
@@ -132,6 +198,7 @@ export default defineComponent({
         if (response.token) {
           this.connected = true;
           await chrome.storage.local.set({ driveConnected: true });
+          this.$emit('status-change', { connected: true, lastBackup: this.lastBackupTime });
         }
       } catch (error) {
         console.error('Failed to connect to Google Drive:', error);
@@ -145,6 +212,7 @@ export default defineComponent({
         await this.sendMessage('drive:disconnect');
         this.connected = false;
         this.autoBackup = false;
+        this.$emit('status-change', { connected: false });
       } catch (error) {
         console.error('Failed to disconnect:', error);
       }
@@ -155,6 +223,7 @@ export default defineComponent({
         await this.sendMessage('drive:uploadBackup');
         this.lastBackupTime = new Date().toISOString();
         await chrome.storage.local.set({ lastDriveBackup: this.lastBackupTime });
+        this.$emit('status-change', { connected: true, lastBackup: this.lastBackupTime });
         alert('Backup uploaded to Google Drive successfully!');
       } catch (error) {
         console.error('Failed to backup to Google Drive:', error);
