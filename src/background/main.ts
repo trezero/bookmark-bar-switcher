@@ -10,6 +10,7 @@ import { install } from '~/background/service.ts';
 import { isOperaBrowser } from './util.ts';
 import { getAuthToken, isConnected, uploadBackup, listBackups, downloadBackup, disconnect } from '~/background/drive.ts';
 import { createBackup, restoreFromBackup } from '~/background/backup.ts';
+import { getAuthMethod } from '~/background/oauth.ts';
 
 chrome.runtime.onInstalled.addListener(install);
 chrome.bookmarks.onChanged.addListener(handleChange);
@@ -78,6 +79,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'drive:disconnect') {
         disconnect().then(() => {
             sendResponse({ success: true });
+        }).catch(error => {
+            sendResponse({ success: false, error: error.message });
+        });
+        return true;
+    }
+    
+    if (message.action === 'drive:getAuthMethod') {
+        getAuthMethod().then(method => {
+            sendResponse({ success: true, method });
         }).catch(error => {
             sendResponse({ success: false, error: error.message });
         });

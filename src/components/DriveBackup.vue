@@ -3,10 +3,13 @@
     <div v-if="!connected" class="text-center">
       <BButton variant="primary" @click="connectDrive" :disabled="connecting">
         <span v-if="connecting">Connecting...</span>
-        <span v-else>Connect Google Drive</span>
+        <span v-else>Sign in with Google</span>
       </BButton>
       <small class="d-block mt-2 text-muted">
         Backup your bookmarks to Google Drive for cross-device recovery
+      </small>
+      <small v-if="authMethod === 'web-oauth'" class="d-block mt-1 text-info">
+        <strong>Note:</strong> Using web-based authentication (compatible with all Chromium browsers)
       </small>
     </div>
 
@@ -77,11 +80,13 @@ export default defineComponent({
       showRestoreModal: false,
       driveBackups: [] as DriveBackupMeta[],
       selectedBackupId: null as string | null,
+      authMethod: 'none' as 'chrome.identity' | 'web-oauth' | 'none',
     };
   },
   async mounted() {
     await this.checkConnection();
     await this.loadSettings();
+    await this.checkAuthMethod();
   },
   methods: {
     async sendMessage(action: string, data: any = {}): Promise<any> {
@@ -104,6 +109,15 @@ export default defineComponent({
       } catch (error) {
         console.error('Failed to check connection:', error);
         this.connected = false;
+      }
+    },
+    async checkAuthMethod() {
+      try {
+        const response = await this.sendMessage('drive:getAuthMethod');
+        this.authMethod = response.method;
+      } catch (error) {
+        console.error('Failed to check auth method:', error);
+        this.authMethod = 'none';
       }
     },
     async loadSettings() {

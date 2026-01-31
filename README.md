@@ -48,6 +48,22 @@ This enhanced version adds critical features to prevent bookmark corruption and 
 - **Auto-Upload**: Optional automatic upload to Drive after each bar switch
 - **Smart Management**: Keeps the latest 10 backups, auto-prunes older ones
 
+## Browser Compatibility
+
+This extension works in **all Chromium-based browsers**, including:
+
+| Browser | Google Drive Authentication | Notes |
+|---------|----------------------------|-------|
+| **Google Chrome** (signed in) | ✅ Seamless (chrome.identity) | No popup required |
+| **Google Chrome** (not signed in) | ✅ Web OAuth popup | Sign-in popup appears |
+| **Perplexity Comet** | ✅ Web OAuth popup | Fully supported |
+| **Microsoft Edge** | ✅ Hybrid | Uses Microsoft or web OAuth |
+| **Brave** | ✅ Web OAuth popup | Fully supported |
+| **Ungoogled Chromium** | ✅ Web OAuth popup | Fully supported |
+| **Any Chromium browser** | ✅ Web OAuth fallback | Always works |
+
+The extension uses **hybrid authentication** that automatically detects your browser and chooses the best authentication method. No browser-level Google sign-in required!
+
 ## Original Project
 
 This extension is based on [Bookmark Bar Switcher](https://github.com/danielptv/bookmark-bar-switcher) by Daniel Purtov, which was inspired by the original [Bookmark-Bar-Switcher](https://github.com/zoeesilcock/Bookmark-Bar-Switcher) by Zoee Silcock. The original project recreated the functionality using Vue.js with TypeScript and Bootstrap for modern Chrome compatibility.
@@ -104,12 +120,14 @@ You can add, rename, reorder and remove bookmark bars from within the extension:
 
 #### Google Drive Backups (Optional)
 1. Click "⚙ Backup & Restore" to expand the backup section
-2. Click "Connect Google Drive" and authorize the extension
+2. Click "**Sign in with Google**" to authenticate
+   - **In Chrome** (with Google sign-in): Instant authentication, no popup
+   - **In other browsers** (Comet, etc.): OAuth popup will open for sign-in
 3. Use "Back up now" to manually upload to Drive
 4. Enable "Auto-backup to Google Drive" for automatic cloud backups
 5. Use "Restore from Google Drive" to recover from cloud backups
 
-**Note**: Google Drive backup requires OAuth2 setup. See `src/manifest.ts` for detailed setup instructions.
+**Note**: Google Drive backup requires OAuth2 setup. See [Authentication Guide](docs/AUTHENTICATION.md) for detailed setup instructions.
 
 ## How it Works
 

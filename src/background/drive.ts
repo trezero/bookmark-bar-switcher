@@ -1,4 +1,5 @@
 import { type BookmarkBackup, type DriveBackupMeta } from '~/types/backup';
+import { getAccessToken, isAuthenticated, signOut as oauthSignOut } from '~/background/oauth';
 
 const DRIVE_API_BASE = 'https://www.googleapis.com/drive/v3/files';
 const DRIVE_UPLOAD_BASE = 'https://www.googleapis.com/upload/drive/v3/files';
@@ -9,13 +10,13 @@ const UPLOAD_RATE_LIMIT_MS = 60000;
 
 /**
  * Get an OAuth2 token for Google Drive access.
+ * Uses hybrid authentication (chrome.identity or web OAuth)
  * @param interactive - Whether to show the OAuth consent screen
  * @returns The access token or undefined if not available
  */
 export async function getAuthToken(interactive: boolean): Promise<string | undefined> {
     try {
-        const result = await chrome.identity.getAuthToken({ interactive });
-        return typeof result === 'string' ? result : result?.token;
+        return await getAccessToken(interactive);
     } catch (error) {
         console.error('Failed to get auth token:', error);
         return undefined;
@@ -27,8 +28,7 @@ export async function getAuthToken(interactive: boolean): Promise<string | undef
  * @returns true if connected, false otherwise
  */
 export async function isConnected(): Promise<boolean> {
-    const token = await getAuthToken(false);
-    return token !== undefined;
+    return await isAuthenticated();
 }
 
 /**
@@ -212,9 +212,5 @@ async function fetchWithRetry(
  * Disconnect from Google Drive by clearing cached tokens.
  */
 export async function disconnect(): Promise<void> {
-    const token = await getAuthToken(false);
-    if (token) {
-        await chrome.identity.removeCachedAuthToken({ token });
-    }
-    await chrome.storage.local.remove('driveConnected');
+    await oauthSignOut();
 }
