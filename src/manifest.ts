@@ -1,4 +1,35 @@
 /* eslint-disable camelcase */
+/**
+ * GOOGLE DRIVE OAUTH2 SETUP INSTRUCTIONS:
+ * 
+ * To enable Google Drive backup functionality, you need to set up OAuth2:
+ * 
+ * 1. Go to https://console.cloud.google.com/
+ * 2. Create a new project or select an existing one
+ * 3. Enable the Google Drive API:
+ *    - Go to "APIs & Services" > "Library"
+ *    - Search for "Google Drive API"
+ *    - Click "Enable"
+ * 4. Configure OAuth consent screen:
+ *    - Go to "APIs & Services" > "OAuth consent screen"
+ *    - Choose "External" user type
+ *    - Fill in app name, user support email, and developer contact
+ *    - Add the scope: https://www.googleapis.com/auth/drive.appdata
+ * 5. Create OAuth 2.0 Client ID:
+ *    - Go to "APIs & Services" > "Credentials"
+ *    - Click "Create Credentials" > "OAuth client ID"
+ *    - Application type: "Chrome Extension"
+ *    - For development (unpacked extension):
+ *      - Load your unpacked extension in Chrome
+ *      - Copy the extension ID from chrome://extensions
+ *      - Use that ID when creating the OAuth client
+ *    - For production (Chrome Web Store):
+ *      - Use your Chrome Web Store extension ID
+ * 6. Copy the Client ID and replace 'YOUR_CLIENT_ID_HERE' below in the oauth2 section
+ * 
+ * Note: The extension will work without OAuth2 configured, but Google Drive backup
+ * features will not be available until you complete this setup.
+ */
 import pkg from '../package.json' with { type: 'json' };
 
 const icons = {
@@ -42,6 +73,10 @@ const manifest = {
         'switch-to-9': { description: 'Switch to 9. bookmark bar.' },
         'switch-to-10': { description: 'Switch to 10. bookmark bar.' },
     },
+    oauth2: {
+        client_id: 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
+        scopes: ['https://www.googleapis.com/auth/drive.appdata'],
+    },
 };
 
 export function getManifest(): chrome.runtime.ManifestV3 {
@@ -51,7 +86,7 @@ export function getManifest(): chrome.runtime.ManifestV3 {
         name: pkg.displayName,
         version: pkg.version,
         manifest_version: 3,
-        permissions: ['bookmarks', 'storage'],
+        permissions: ['bookmarks', 'storage', 'identity'],
         ...manifest,
     };
 }

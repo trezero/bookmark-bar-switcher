@@ -1,6 +1,7 @@
 import { checkWindowId, findFolder, getCustomDirectoryId } from '~/background/util.ts';
 import { exchangeBars, install } from '~/background/service.ts';
 import { getActiveBar, getLastWorkspaceId, updateLastWorkspaceId } from '~/background/storage.ts';
+import { isLocked } from '~/background/operation-lock.ts';
 
 const SHORTCUT_DELAY = 100;
 
@@ -11,6 +12,9 @@ const SHORTCUT_DELAY = 100;
  * @param info - Info about the changed bookmark.
  */
 export const handleChange = async (_id: string, info: { title: string; url?: string }) => {
+    if (isLocked()) {
+        return;
+    }
     if (info.url !== undefined) {
         return;
     }
@@ -23,6 +27,9 @@ export const handleChange = async (_id: string, info: { title: string; url?: str
  * @param id - The bookmark id.
  */
 export const handleMove = async (id: string) => {
+    if (isLocked()) {
+        return;
+    }
     const bookmark = await findFolder(id);
     if (bookmark === undefined) {
         return;
@@ -37,6 +44,9 @@ export const handleMove = async (id: string) => {
  * @param removeInfo - Info about the removed bookmark.
  */
 export const handleRemove = async (id: string, removeInfo: { node: { title: string; url?: string } }) => {
+    if (isLocked()) {
+        return;
+    }
     if (removeInfo.node.url !== undefined) {
         return;
     }

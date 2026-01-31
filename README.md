@@ -1,16 +1,17 @@
 
-<h1 align="center">Bookmark Bar Switcher</h1>
+<h1 align="center">Bookmark Bar Switcher Plus</h1>
 
 <p align="center">
-    <img alt="Tests status" src="https://img.shields.io/github/actions/workflow/status/danielptv/bookmark-bar-switcher/test.yaml?label=Tests&logo=github">
-    <img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/ogcdabloogpipelcphkhajkaneclpnlk?logo=googlechrome&label=Users&logoColor=%23F4B400">
-    <img alt="Chrome Web Store" src="https://img.shields.io/chrome-web-store/rating/ogcdabloogpipelcphkhajkaneclpnlk?logo=googlechrome&label=Rating&logoColor=%23F4B400">
-    <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/ogcdabloogpipelcphkhajkaneclpnlk?logo=googlechrome&label=Latest%20Version&logoColor=%23F4B400">
-    <a href="https://github.com/danielptv/postgres-multiple-databases/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg?logo=github"></a>
+    <a href="https://github.com/danielptv/bookmark-bar-switcher"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg?logo=github"></a>
+    <img alt="Version" src="https://img.shields.io/badge/Version-2.0.0-blue.svg">
 </p>
 
 <p align="center">
-A browser extension for conveniently switching between bookmark bars.
+Switch between multiple bookmark bars with <strong>sync corruption prevention</strong>, <strong>automatic backups</strong>, and <strong>Google Drive integration</strong>.
+</p>
+
+<p align="center">
+<em>Forked from <a href="https://github.com/danielptv/bookmark-bar-switcher">bookmark-bar-switcher</a> by Daniel Purtov</em>
 </p>
 
 <p align="center">
@@ -25,12 +26,31 @@ A browser extension for conveniently switching between bookmark bars.
   </a>
 </p>
 
-## Inspiration
+## What's New in Plus
 
-The development of this extension was inspired by the
-original [Bookmark-Bar-Switcher](https://github.com/zoeesilcock/Bookmark-Bar-Switcher). Sadly, it does not work with the
-current version of Chrome any longer. Therefore, I have developed a new app using Vue.js with TypeScript and Bootstrap
-recreating and extending the functionality of the original.
+This enhanced version adds critical features to prevent bookmark corruption and provide backup capabilities:
+
+### 🛡️ Sync Corruption Prevention
+- **Sync Detection**: Automatically detects when Chrome bookmark sync is enabled
+- **Warning System**: Displays a prominent warning banner explaining the risks
+- **Operation Guard**: Prevents sync-induced events from cascading during bar switches
+- **Integrity Verification**: Validates bookmark positions after each switch
+
+### 💾 Automatic Local Backups
+- **Pre-Switch Snapshots**: Automatically backs up all bookmark bars before every switch
+- **Backup History**: Maintains the last 5 backups for quick recovery
+- **One-Click Restore**: Easily restore from any backup with a single click
+- **Nested Folder Support**: Fully preserves complex bookmark folder structures
+
+### ☁️ Google Drive Integration
+- **Cloud Backup**: Store backups in your Google Drive's secure appDataFolder
+- **Cross-Device Recovery**: Restore bookmarks even after reinstalling or on new devices
+- **Auto-Upload**: Optional automatic upload to Drive after each bar switch
+- **Smart Management**: Keeps the latest 10 backups, auto-prunes older ones
+
+## Original Project
+
+This extension is based on [Bookmark Bar Switcher](https://github.com/danielptv/bookmark-bar-switcher) by Daniel Purtov, which was inspired by the original [Bookmark-Bar-Switcher](https://github.com/zoeesilcock/Bookmark-Bar-Switcher) by Zoee Silcock. The original project recreated the functionality using Vue.js with TypeScript and Bootstrap for modern Chrome compatibility.
 
 ## Supported Browsers
 
@@ -74,6 +94,22 @@ You can add, rename, reorder and remove bookmark bars from within the extension:
   confirm with `Enter` or by clicking the ***SAVE***-button.
 * **Reorder:** Drag the bookmark bar to its desired position with the mouse and drop it.
 * **Remove:** Enter the ***EDIT*** mode and click the ***DELETE*** button.
+
+### Backup & Restore
+
+#### Local Backups
+* **Automatic**: Backups are created automatically before every bar switch
+* **Manual Backup**: Click "Create backup now" in the Backup & Restore section
+* **Restore**: Click "Restore bookmarks" to view and restore from available backups
+
+#### Google Drive Backups (Optional)
+1. Click "⚙ Backup & Restore" to expand the backup section
+2. Click "Connect Google Drive" and authorize the extension
+3. Use "Back up now" to manually upload to Drive
+4. Enable "Auto-backup to Google Drive" for automatic cloud backups
+5. Use "Restore from Google Drive" to recover from cloud backups
+
+**Note**: Google Drive backup requires OAuth2 setup. See `src/manifest.ts` for detailed setup instructions.
 
 ## How it Works
 
