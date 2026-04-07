@@ -6,7 +6,7 @@
     "name": "Jason Perr",
     "email": "support@workflowintelligencenexus.com"
   },
-  "description": "Switch between multiple bookmark bars with sync corruption prevention, automatic backups, and Google Drive integration. Forked from bookmark-bar-switcher by Daniel Purtov.",
+  "description": "Switch between multiple bookmark bars with sync corruption prevention, automatic backups, and Google Drive integration.",
   "license": "MIT",
   "type": "module",
   "engines": {
