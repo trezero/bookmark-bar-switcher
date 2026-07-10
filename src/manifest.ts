@@ -79,6 +79,12 @@ const manifest = {
     },
 };
 
+// Pins a stable extension ID (hmhllnlekmalgneodbpldknhcjikahom) across machines so the
+// OAuth redirect URI (https://<id>.chromiumapp.org/) stays valid. Public key only; the
+// matching private key lives in secrets/ (gitignored).
+const EXTENSION_KEY =
+    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz2fVzc5If2NqRGpDf45opw3xhC7CqEUoqyl/Vj05eFXE9ueVDxDJ/AtmCACZ+tMkHYAbkEA8h96Sodec0kJkPN+TAnS8ecac4WmP8Llo+OqKMW/7mzNcLun1yv2U2xpNiEZPAxf1ss+tNs5mEOnz5GB9+ndEjbQ3pQ6+ISLFG/3wO6JaQl1l3Gdc3/HuPMHF7SajtbFlCcxHIXVGfK8ouYNWxDy4UGmAhO/vsKrRD03yjzNc58zLvVTTSyr0LtvtnKEBn3xW5f02hc445fwENTkWdPTQKELKrIOUmhEdj30zI8sYtNLe0u7WXihxyoth28noS7XuGDqNniicT4VdVwIDAQAB';
+
 export function getManifest(): chrome.runtime.ManifestV3 {
     return {
         author: { email: pkg.author.email },
@@ -86,6 +92,7 @@ export function getManifest(): chrome.runtime.ManifestV3 {
         name: pkg.displayName,
         version: pkg.version,
         manifest_version: 3,
+        key: EXTENSION_KEY,
         permissions: ['bookmarks', 'storage', 'identity', 'webNavigation'],
         ...manifest,
     };
