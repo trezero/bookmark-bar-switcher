@@ -9,6 +9,32 @@
 Switch between multiple bookmark bars with <strong>sync corruption prevention</strong>, <strong>automatic backups</strong>, and <strong>Google Drive integration</strong>.
 </p>
 
+## Build Process
+
+To build the Bookmark Bar Switcher Plus extension:
+
+1. Ensure you have Node.js >= 22.0.0 and npm >= 10.2.5 installed.
+2. Clone the repository and navigate to the project directory.
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Build the extension:
+
+   ```bash
+   npm run build
+   ```
+
+   This will compile TypeScript and bundle the code using Vite, outputting to the `dist` folder.
+5. Load the extension in Chrome:
+   - Open `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select the `dist` folder.
+
+For development, use `npm run dev` for hot reloading.
+
 <p align="center">
 <em>Forked from <a href="https://github.com/danielptv/bookmark-bar-switcher">bookmark-bar-switcher</a> by Daniel Purtov</em>
 </p>

@@ -18,6 +18,8 @@ declare module 'bookmarks' {
     export interface BookmarksBarPopup extends BookmarksBar {
         isActive: boolean;
         isEdited: boolean;
+        bookmarkCount?: number;
+        lastUsed?: number;
     }
 
     export interface RemoveCandidate extends BookmarksBarPopup {
