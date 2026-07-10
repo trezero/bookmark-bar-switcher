@@ -3,3 +3,10 @@
 .idea
 secrets/
 src/background/oauth-config.ts
+.env
+# Local AI tooling (not part of the extension)
+.claude/
+.mcp.json
+.cortex/
+# Packaged build artifacts
+*.zip
