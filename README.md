@@ -1,4 +1,3 @@
-
 <h1 align="center">Bookmark Bar Switcher Plus</h1>
 
 <p align="center">
@@ -52,9 +51,26 @@ For development, use `npm run dev` for hot reloading.
   </a>
 </p>
 
+## Installation (Development Mode)
+
+To install this extension locally for development or testing:
+
+1. Clone the repository and install dependencies:
+   ```bash
+   npm install
+   ```
+2. Build the project:
+   ```bash
+   npm run build
+   # Or use `npm run watch` to auto-rebuild on file changes
+   ```
+3. Open your Chromium browser (Chrome, Edge, Brave, etc.) and go to the extensions page (e.g., `chrome://extensions/`).
+4. Enable **Developer mode** in the top right corner.
+5. Click **Load unpacked** and select the resulting `dist/` directory generated in the project root.
+
 ## What's New in Plus
 
-This enhanced version adds critical features to prevent bookmark corruption and provide backup capabilities:
+This enhanced version adds critical features to prevent bookmark corruption and provide backup capabilities. It is built upon the original `bookmark-bar-switcher` with a primary focus on data safety.
 
 ### 🛡️ Sync Corruption Prevention
 - **Sync Detection**: Automatically detects when Chrome bookmark sync is enabled
@@ -76,33 +92,21 @@ This enhanced version adds critical features to prevent bookmark corruption and 
 
 ## Browser Compatibility
 
-This extension works in **all Chromium-based browsers**, including:
+This extension works in **all Chromium-based browsers**:
 
 | Browser | Google Drive Authentication | Notes |
 |---------|----------------------------|-------|
-| **Google Chrome** (signed in) | ✅ Seamless (chrome.identity) | No popup required |
+| **Google Chrome** (signed in) | ✅ Seamless (`chrome.identity`) | No popup required |
 | **Google Chrome** (not signed in) | ✅ Web OAuth popup | Sign-in popup appears |
-| **Perplexity Comet** | ✅ Web OAuth popup | Fully supported |
+| **Perplexity Comet** | ✅ Web OAuth popup | Fully supported (See [Comet Guide](docs/COMET_COMPATIBILITY.md)) |
 | **Microsoft Edge** | ✅ Hybrid | Uses Microsoft or web OAuth |
 | **Brave** | ✅ Web OAuth popup | Fully supported |
 | **Ungoogled Chromium** | ✅ Web OAuth popup | Fully supported |
 | **Any Chromium browser** | ✅ Web OAuth fallback | Always works |
 
-The extension uses **hybrid authentication** that automatically detects your browser and chooses the best authentication method. No browser-level Google sign-in required!
+The extension uses **hybrid authentication** that automatically detects your browser and chooses the best authentication method. No browser-level Google sign-in is required!
 
-## Original Project
-
-This extension is based on [Bookmark Bar Switcher](https://github.com/danielptv/bookmark-bar-switcher) by Daniel Purtov, which was inspired by the original [Bookmark-Bar-Switcher](https://github.com/zoeesilcock/Bookmark-Bar-Switcher) by Zoee Silcock. The original project recreated the functionality using Vue.js with TypeScript and Bootstrap for modern Chrome compatibility.
-
-## Supported Browsers
-
-Currently, this extension supports Chromium browsers only.
-
-| Browser    | Support Level                                                                                    |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| **Chrome** | *Officially Supported* (with automated tests)                                                    |
-| **Opera**  | *Officially Supported* (with automated tests)                                                    |
-| **Edge**   | *Unofficially Supported* as a Chrome-compatible target (but not explicitly tested in automation) |
+For details on OAuth setup, refer to the [Authentication Guide](docs/AUTHENTICATION.md).
 
 ## How to Use
 
@@ -111,8 +115,7 @@ Currently, this extension supports Chromium browsers only.
 #### Mouse
 
 All available bookmark bars will show up in the extension popup.
-To switch between them, just click the one you would
-like to switch to.
+To switch between them, just click the one you would like to switch to.
 
 #### Keyboard Shortcuts
 
@@ -132,8 +135,7 @@ Additional shortcuts are available. To assign them or redefine existing shortcut
 You can add, rename, reorder and remove bookmark bars from within the extension:
 
 * **Add:** Type the name of your new bar into the input field at the bottom and confirm with `Enter` or by clicking the ***PLUS***-button.
-* **Edit:** Either use the ***EDIT***-button next to the bar you want to modify or double-click it. Type the new name and
-  confirm with `Enter` or by clicking the ***SAVE***-button.
+* **Edit:** Either use the ***EDIT***-button next to the bar you want to modify or double-click it. Type the new name and confirm with `Enter` or by clicking the ***SAVE***-button.
 * **Reorder:** Drag the bookmark bar to its desired position with the mouse and drop it.
 * **Remove:** Enter the ***EDIT*** mode and click the ***DELETE*** button.
 
@@ -148,7 +150,7 @@ You can add, rename, reorder and remove bookmark bars from within the extension:
 1. Click "⚙ Backup & Restore" to expand the backup section
 2. Click "**Sign in with Google**" to authenticate
    - **In Chrome** (with Google sign-in): Instant authentication, no popup
-   - **In other browsers** (Comet, etc.): OAuth popup will open for sign-in
+   - **In other browsers**: OAuth popup will open for sign-in
 3. Use "Back up now" to manually upload to Drive
 4. Enable "Auto-backup to Google Drive" for automatic cloud backups
 5. Use "Restore from Google Drive" to recover from cloud backups
@@ -157,8 +159,15 @@ You can add, rename, reorder and remove bookmark bars from within the extension:
 
 ## How it Works
 
-The extension exchanges the bookmarks inside the current bookmark bar with the ones within a chosen folder in the
-*"Bookmark Bars"* directory.
-The current bookmark bar will be backed up to a folder in *"Bookmark Bars"*.
-The current
-bookmark bar will be called ***"My first bookmark bar 🚀"*** when you first install the extension.
+The extension manages your bookmark bars primarily by exchanging the bookmarks within your active bookmark bar with those stored in a designated backup folder.
+
+1. Your current active bookmark bar is safely transferred into a folder located under the *"Bookmark Bars"* directory, acting as its storage state.
+2. The items of the newly selected bookmark bar are moved directly into your active bookmark bar.
+
+When you first install the extension, the current bookmark bar will be renamed to ***"My first bookmark bar 🚀"***. 
+
+On top of this standard folder-exchange mechanism, **Bookmark Bar Switcher Plus** introduces full-state snapshot backups before any switch occurs. This safely guarantees that your bookmarks can never be irrecoverably shuffled by browser synchronization engines or bugs.
+
+## Acknowledgements & Original Project
+
+This enhanced version is based on the robust foundation built by the original [Bookmark Bar Switcher](https://github.com/danielptv/bookmark-bar-switcher) by Daniel Purtov, which itself was inspired by the legacy [Bookmark-Bar-Switcher](https://github.com/zoeesilcock/Bookmark-Bar-Switcher) by Zoee Silcock. The original project recreated the functionality using Vue.js with TypeScript and Bootstrap for modern Chrome compatibility.
